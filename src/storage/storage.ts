@@ -1,5 +1,6 @@
 import { MMKV } from "react-native-mmkv";
 import { AppStorage, Message } from "../types/common";
+import { Storage } from "redux-persist";
 
 const storage = new MMKV();
 
@@ -45,4 +46,19 @@ export const setStorageItem = <K extends keyof AppStorage>(
 
 export const removeStorageItem = <K extends keyof AppStorage>(key: K): void => {
   storage.delete(key);
+};
+
+export const mmkvStorage: Storage = {
+  setItem: (key, value) => {
+    storage.set(key, value);
+    return Promise.resolve(true);
+  },
+  getItem: (key) => {
+    const value = storage.getString(key);
+    return Promise.resolve(value ?? null);
+  },
+  removeItem: (key) => {
+    storage.delete(key);
+    return Promise.resolve();
+  },
 };

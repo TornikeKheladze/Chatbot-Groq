@@ -12,11 +12,7 @@ import {
 import { MMKV } from "react-native-mmkv";
 import { Message } from "../../types/common";
 import { sendMessageToGroq } from "../../helpers/groq";
-import {
-  getSavedMessages,
-  saveMessages,
-  setStorageItem,
-} from "../../storage/storage";
+import { getSavedMessages, saveMessages } from "../../storage/storage";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
 import { useMutation } from "@tanstack/react-query";
