@@ -9,104 +9,48 @@ import {
   TouchableOpacity,
   ListRenderItem,
 } from "react-native";
-import { Groq } from "groq-sdk";
 import { MMKV } from "react-native-mmkv";
-
-import Constants from "expo-constants";
-import { GroqMessage, Message } from "../../types/common";
-
-const { GROQ_API_KEY } = Constants.expoConfig?.extra as {
-  GROQ_API_KEY: string;
-};
-
-export type ChatScreenProps = {
-  // Add any navigation props if needed
-};
-
-const groq = new Groq({
-  apiKey: GROQ_API_KEY,
-});
+import { Message } from "../../types/common";
+import { sendMessageToGroq } from "../../helpers/groq";
+import {
+  getSavedMessages,
+  saveMessages,
+  setStorageItem,
+} from "../../storage/storage";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../App";
+import { useMutation } from "@tanstack/react-query";
 
 const storage = new MMKV();
 
+type ChatScreenProps = NativeStackScreenProps<RootStackParamList, "Chat">;
+
 const ChatScreen: React.FC<ChatScreenProps> = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const savedMessages = storage.getString("chatHistory");
-    if (savedMessages) {
-      try {
-        const parsedMessages: Message[] = JSON.parse(savedMessages);
-        setMessages(parsedMessages);
-      } catch (error) {
-        console.error("Error parsing saved messages:", error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    storage.set("chatHistory", JSON.stringify(messages));
-  }, [messages]);
+  const {
+    mutate,
+    isPending,
+    data: messages = getSavedMessages(),
+  } = useMutation({
+    mutationFn: sendMessageToGroq,
+    onSuccess: (updatedMessages) => saveMessages(updatedMessages),
+  });
 
   const handleSend = async (): Promise<void> => {
     if (!inputText.trim()) return;
-
     const userMessage: Message = {
       text: inputText,
       sender: "user",
       timestamp: Date.now(),
     };
     const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
     setInputText("");
-    setIsLoading(true);
-
-    try {
-      const groqMessages: GroqMessage[] = [
-        {
-          role: "system",
-          content: "You are a helpful assistant. Keep responses concise.",
-        },
-        ...updatedMessages.map(
-          (msg): GroqMessage => ({
-            role: msg.sender === "user" ? "user" : "assistant",
-            content: msg.text,
-          })
-        ),
-      ];
-
-      const chatCompletion = await groq.chat.completions.create({
-        messages: groqMessages,
-        model: "llama-3.3-70b-versatile",
-      });
-
-      const aiMessage: Message = {
-        text:
-          chatCompletion.choices[0]?.message?.content ||
-          "Sorry, I could not process that.",
-        sender: "ai",
-        timestamp: Date.now(),
-      };
-
-      setMessages([...updatedMessages, aiMessage]);
-    } catch (error) {
-      console.error("Error calling Groq API:", error);
-      const errorMessage: Message = {
-        text: "Sorry, there was an error processing your request.",
-        sender: "ai",
-        timestamp: Date.now(),
-      };
-      setMessages([...updatedMessages, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
+    mutate(updatedMessages);
   };
 
   const clearHistory = (): void => {
-    setMessages([]);
-    storage.delete("chatHistory");
+    storage.set("chatHistory", "[]");
   };
 
   const renderMessage: ListRenderItem<Message> = ({ item }) => (
@@ -151,19 +95,19 @@ const ChatScreen: React.FC<ChatScreenProps> = () => {
           placeholder="Type your message..."
           onSubmitEditing={handleSend}
           returnKeyType="send"
-          editable={!isLoading}
+          editable={!isPending}
           placeholderTextColor="#999"
         />
         <TouchableOpacity
           style={[
             styles.sendButton,
-            (isLoading || !inputText.trim()) && styles.disabledButton,
+            (isPending || !inputText.trim()) && styles.disabledButton,
           ]}
           onPress={handleSend}
-          disabled={isLoading || !inputText.trim()}
+          disabled={isPending || !inputText.trim()}
         >
           <Text style={styles.sendButtonText}>
-            {isLoading ? "..." : "Send"}
+            {isPending ? "..." : "Send"}
           </Text>
         </TouchableOpacity>
       </View>
