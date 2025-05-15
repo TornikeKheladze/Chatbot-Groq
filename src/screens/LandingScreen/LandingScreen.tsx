@@ -1,9 +1,12 @@
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../App";
+import { GuestStackParamList } from "../../navigation/GuestStack";
 
-type LandingScreenProps = NativeStackScreenProps<RootStackParamList, "Landing">;
+type LandingScreenProps = NativeStackScreenProps<
+  GuestStackParamList,
+  "Landing"
+>;
 
 const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
   return (

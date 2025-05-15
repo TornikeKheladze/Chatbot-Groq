@@ -2,10 +2,10 @@ import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useLoginScreen } from "./useLoginScreen";
-import { RootStackParamList } from "../../../App";
 import Input from "../../components/Input/Input";
+import { GuestStackParamList } from "../../navigation/GuestStack";
 
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "Login">;
+type LoginScreenProps = NativeStackScreenProps<GuestStackParamList, "Login">;
 
 const LoginScreen: React.FC<LoginScreenProps> = () => {
   const { control, handleSubmit, errors, onSubmit } = useLoginScreen();

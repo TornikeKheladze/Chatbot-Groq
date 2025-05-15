@@ -2,11 +2,11 @@ import { View, TouchableOpacity, Switch, Text, StyleSheet } from "react-native";
 import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useRegisterScreen } from "./useRegisterScreen";
-import { RootStackParamList } from "../../../App";
 import Input from "../../components/Input/Input";
+import { GuestStackParamList } from "../../navigation/GuestStack";
 
 type RegisterScreenProps = NativeStackScreenProps<
-  RootStackParamList,
+  GuestStackParamList,
   "Register"
 >;
 

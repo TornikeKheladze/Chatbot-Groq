@@ -6,17 +6,17 @@ import { Alert } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { User } from "../../types/common";
-import { RootStackParamList } from "../../../App";
 import { registerSchema } from "../../schemas/registerSchema";
 import { AppDispatch } from "../../storage/store";
 import { registerUser } from "../../storage/userSlice";
+import { GuestStackParamList } from "../../navigation/GuestStack";
 
 interface UserRegisterForm extends User {
   passwordConfirmation: string;
 }
 
 type Navigation = NativeStackNavigationProp<
-  RootStackParamList,
+  GuestStackParamList,
   "Register",
   undefined
 >;

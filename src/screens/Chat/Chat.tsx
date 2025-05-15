@@ -14,12 +14,13 @@ import { Message } from "../../types/common";
 import { sendMessageToGroq } from "../../helpers/groq";
 import { getSavedMessages, saveMessages } from "../../storage/storage";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../App";
 import { useMutation } from "@tanstack/react-query";
+import { AuthStackParamList } from "../../navigation/AuthStack";
+import LogoutBtn from "../../components/LogoutBtn/LogoutBtn";
 
 const storage = new MMKV();
 
-type ChatScreenProps = NativeStackScreenProps<RootStackParamList, "Chat">;
+type ChatScreenProps = NativeStackScreenProps<AuthStackParamList, "Chat">;
 
 const ChatScreen: React.FC<ChatScreenProps> = () => {
   const [inputText, setInputText] = useState<string>("");
@@ -76,6 +77,7 @@ const ChatScreen: React.FC<ChatScreenProps> = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <LogoutBtn />
       <FlatList
         data={messages}
         keyExtractor={(item, index) => index.toString()}
