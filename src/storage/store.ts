@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./userSlice";
+import themeSlice from "./themeSlice";
 import {
   persistStore,
   persistReducer,
@@ -18,10 +19,12 @@ const persistConfig = {
 };
 
 const persistedUserReducer = persistReducer(persistConfig, userSlice);
+const persistedThemeReducer = persistReducer(persistConfig, themeSlice);
 
 export const store = configureStore({
   reducer: {
     users: persistedUserReducer,
+    theme: persistedThemeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

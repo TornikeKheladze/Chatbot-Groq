@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
-  Text,
   TextInput,
   FlatList,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
-  ListRenderItem,
 } from "react-native";
 import { MMKV } from "react-native-mmkv";
 import { Message } from "../../types/common";
@@ -16,13 +13,17 @@ import { getSavedMessages, saveMessages } from "../../storage/storage";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useMutation } from "@tanstack/react-query";
 import { AuthStackParamList } from "../../navigation/AuthStack";
-import LogoutBtn from "../../components/LogoutBtn/LogoutBtn";
+import { useSelector } from "react-redux";
+import { RootState } from "../../storage/store";
+import MessageItem from "./MessageItem";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const storage = new MMKV();
 
 type ChatScreenProps = NativeStackScreenProps<AuthStackParamList, "Chat">;
 
 const ChatScreen: React.FC<ChatScreenProps> = () => {
+  const { theme } = useSelector((store: RootState) => store.theme);
   const [inputText, setInputText] = useState<string>("");
 
   const {
@@ -50,140 +51,81 @@ const ChatScreen: React.FC<ChatScreenProps> = () => {
     storage.set("chatHistory", "[]");
   };
 
-  const renderMessage: ListRenderItem<Message> = ({ item }) => (
-    <View
-      style={[
-        styles.message,
-        item.sender === "user" ? styles.userMessage : styles.aiMessage,
-      ]}
-    >
-      <Text
-        style={
-          item.sender === "user" ? styles.userMessageText : styles.messageText
-        }
-      >
-        {item.text}
-      </Text>
-      {item.timestamp && (
-        <Text style={styles.timestamp}>
-          {new Date(item.timestamp).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </Text>
-      )}
-    </View>
-  );
-
   return (
-    <SafeAreaView style={styles.container}>
-      <LogoutBtn />
+    <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
       <FlatList
         data={messages}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={renderMessage}
+        renderItem={(message) => <MessageItem item={message} />}
         contentContainerStyle={styles.messagesContainer}
         inverted={messages.length > 0}
       />
-      <View style={styles.inputContainer}>
+      <View
+        style={[styles.inputContainer, { backgroundColor: theme.bg.secondary }]}
+      >
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.text.primary }]}
           value={inputText}
           onChangeText={setInputText}
-          placeholder="Type your message..."
+          placeholder="Ask anything..."
           onSubmitEditing={handleSend}
           returnKeyType="send"
           editable={!isPending}
           placeholderTextColor="#999"
+          textAlignVertical="top"
+          multiline
+          numberOfLines={4}
         />
         <TouchableOpacity
           style={[
+            { backgroundColor: theme.text.primary },
             styles.sendButton,
             (isPending || !inputText.trim()) && styles.disabledButton,
           ]}
           onPress={handleSend}
           disabled={isPending || !inputText.trim()}
         >
-          <Text style={styles.sendButtonText}>
-            {isPending ? "..." : "Send"}
-          </Text>
+          <AntDesign name="arrowup" size={24} color={theme.bg.primary} />
         </TouchableOpacity>
       </View>
-      {messages.length > 0 && (
+      {/* {messages.length > 0 && (
         <TouchableOpacity style={styles.clearButton} onPress={clearHistory}>
           <Text style={styles.clearButtonText}>Clear History</Text>
         </TouchableOpacity>
-      )}
-    </SafeAreaView>
+      )} */}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
-    width: "100%",
+    paddingBottom: 30,
   },
   messagesContainer: {
     padding: 10,
   },
-  message: {
-    maxWidth: "80%",
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 8,
-  },
-  userMessage: {
-    alignSelf: "flex-end",
-    backgroundColor: "#007AFF",
-    borderBottomRightRadius: 0,
-  },
-  aiMessage: {
-    alignSelf: "flex-start",
-    backgroundColor: "#E5E5EA",
-    borderBottomLeftRadius: 0,
-  },
-  messageText: {
-    color: "#000",
-    fontSize: 16,
-  },
-  userMessageText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  timestamp: {
-    fontSize: 12,
-    color: "rgba(0,0,0,0.5)",
-    marginTop: 4,
-    alignSelf: "flex-end",
-  },
   inputContainer: {
     flexDirection: "row",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
-    backgroundColor: "#fff",
+    padding: 15,
     alignItems: "center",
+    marginRight: 15,
+    marginLeft: 15,
+    borderRadius: 20,
+    height: 100,
   },
   input: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
     marginRight: 10,
     fontSize: 16,
-    color: "#000",
+    height: 80,
   },
   sendButton: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#007AFF",
     borderRadius: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    height: 40,
+    padding: 5,
   },
   disabledButton: {
     backgroundColor: "#ccc",
