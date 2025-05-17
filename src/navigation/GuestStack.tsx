@@ -1,8 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LandingScreen from "../screens/LandingScreen/LandingScreen";
-import LoginScreen from "../screens/LoginScreen/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen/RegisterScreen";
+import LandingScreen from "../screens/guestScreens/LandingScreen/LandingScreen";
+import LoginScreen from "../screens/guestScreens/LoginScreen/LoginScreen";
+import RegisterScreen from "../screens/guestScreens/RegisterScreen/RegisterScreen";
 
 export type GuestStackParamList = {
   Landing: undefined;

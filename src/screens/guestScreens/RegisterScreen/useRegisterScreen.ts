@@ -5,11 +5,11 @@ import { useDispatch } from "react-redux";
 import { Alert } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
-import { User } from "../../types/common";
-import { registerSchema } from "../../schemas/registerSchema";
-import { AppDispatch } from "../../storage/store";
-import { registerUser } from "../../storage/userSlice";
-import { GuestStackParamList } from "../../navigation/GuestStack";
+import { User } from "../../../types/common";
+import { GuestStackParamList } from "../../../navigation/GuestStack";
+import { registerSchema } from "../../../schemas/registerSchema";
+import { AppDispatch } from "../../../storage/store";
+import { registerUser } from "../../../storage/userSlice";
 
 interface UserRegisterForm extends User {
   passwordConfirmation: string;

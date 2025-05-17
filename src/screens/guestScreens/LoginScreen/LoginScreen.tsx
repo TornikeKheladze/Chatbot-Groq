@@ -2,8 +2,8 @@ import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useLoginScreen } from "./useLoginScreen";
-import Input from "../../components/Input/Input";
-import { GuestStackParamList } from "../../navigation/GuestStack";
+import { GuestStackParamList } from "../../../navigation/GuestStack";
+import Input from "../../../components/Input/Input";
 
 type LoginScreenProps = NativeStackScreenProps<GuestStackParamList, "Login">;
 

@@ -1,9 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../storage/store";
-import { saveAuthUser } from "../../storage/userSlice";
-import { loginSchema } from "../../schemas/loginSchema";
+import { loginSchema } from "../../../schemas/loginSchema";
+import { AppDispatch, RootState } from "../../../storage/store";
+import { saveAuthUser } from "../../../storage/userSlice";
 
 type UserLoginForm = {
   email: string;

@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, ListRenderItemInfo } from "react-native";
 import React from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../storage/store";
-import { Message } from "../../types/common";
+import { RootState } from "../../../../storage/store";
+import { Message } from "../../../../types/common";
 
 const MessageItem: React.FC<{ item: ListRenderItemInfo<Message> }> = ({
   item,

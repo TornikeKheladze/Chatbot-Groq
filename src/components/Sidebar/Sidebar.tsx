@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -7,49 +7,33 @@ import {
   Dimensions,
   Switch,
   Button,
+  TouchableOpacity,
+  FlatList,
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../storage/store";
-import { resetTheme, toggleTheme } from "../../storage/themeSlice";
-import LogoutBtn from "../LogoutBtn/LogoutBtn";
+import Animated from "react-native-reanimated";
+import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 
-const { width, height } = Dimensions.get("window");
-const SIDEBAR_WIDTH = width * 0.8;
+import { useSidebar } from "./useSidebar";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
 
+const { width, height } = Dimensions.get("window");
+const SIDEBAR_WIDTH = width * 0.8;
+
 const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
-  const { theme } = useSelector((store: RootState) => store.theme);
-  const dispatch = useDispatch<AppDispatch>();
-
-  const translateX = useSharedValue(-SIDEBAR_WIDTH);
-  const backdropOpacity = useSharedValue(0);
-  useEffect(() => {
-    translateX.value = withTiming(isOpen ? 0 : -SIDEBAR_WIDTH, {
-      duration: 300,
-    });
-    backdropOpacity.value = withTiming(isOpen ? 1 : 0, { duration: 300 });
-  }, [isOpen]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  const backdropStyle = useAnimatedStyle(() => ({
-    opacity: backdropOpacity.value,
-    display: backdropOpacity.value === 0 ? "none" : "flex",
-  }));
-  const toggle = () => {
-    dispatch(toggleTheme());
-  };
+  const {
+    backdropStyle,
+    animatedStyle,
+    theme,
+    toggle,
+    dispatch,
+    logout,
+    onChatPress,
+    userChats,
+  } = useSidebar(isOpen, onClose);
 
   return (
     <>
@@ -58,6 +42,7 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
       >
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
       </Animated.View>
+
       <Animated.View
         style={[
           styles.container,
@@ -70,10 +55,35 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
           value={theme.mode === "dark" ? true : false}
           onValueChange={toggle}
         />
-        <Button title="reset" onPress={() => dispatch(resetTheme())} />
+        <TouchableOpacity
+          style={styles.newChatBtn}
+          onPress={() => onChatPress(undefined)}
+        >
+          <Text>New Chat</Text>
+        </TouchableOpacity>
+        <View>
+          <Text>test</Text>
+        </View>
+        <FlatList
+          data={userChats}
+          keyExtractor={(item, index) => index.toString() + item.chatId}
+          renderItem={(chat) => (
+            <TouchableOpacity onPress={() => onChatPress(chat.item)}>
+              <Text>{chat.item.chatName}</Text>
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={styles.chatListContainer}
+        />
 
-        <Text style={{ color: theme.text.primary }}>Sidebar</Text>
-        <LogoutBtn />
+        <View>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={() => dispatch(logout())}
+          >
+            <SimpleLineIcons name="logout" size={20} color="red" />
+            <Text>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </Animated.View>
     </>
   );
@@ -92,10 +102,26 @@ const styles = StyleSheet.create({
     width: SIDEBAR_WIDTH,
     zIndex: 20,
     height,
+    justifyContent: "center",
   },
   backdrop: {
     backgroundColor: "rgba(0,0,0,0.4)",
     zIndex: 10,
     height,
+  },
+  bottomContainer: {},
+  logoutButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    padding: 12,
+    borderRadius: 16,
+    gap: 8,
+  },
+  chatListContainer: {
+    backgroundColor: "red",
+  },
+  newChatBtn: {
+    backgroundColor: "blue",
   },
 });

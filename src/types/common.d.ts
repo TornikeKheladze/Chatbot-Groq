@@ -1,7 +1,7 @@
 export type Message = {
   text: string;
   sender: "user" | "ai";
-  timestamp?: number;
+  timestamp: number;
 };
 
 export type GroqMessageRole = "system" | "user" | "assistant";
@@ -34,3 +34,10 @@ export interface AppStorage {
   authorizedUser: User;
   chatHistories: ChatHistories;
 }
+
+export type ChatType = {
+  userEmail: string;
+  chatName: string;
+  messages: Message[];
+  chatId: number;
+};

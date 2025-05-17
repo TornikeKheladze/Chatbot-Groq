@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../types/common";
 
-const initialState: { authorizedUser: User | undefined; users: User[] } = {
-  authorizedUser: undefined,
-  users: [],
-};
-
 type ChangePasswordPayload = {
   email: string;
   password: string;
@@ -14,6 +9,11 @@ type ChangePasswordPayload = {
 interface UserWithPrevEmail extends User {
   previousEmail?: string;
 }
+
+const initialState: { authorizedUser: User | undefined; users: User[] } = {
+  authorizedUser: undefined,
+  users: [],
+};
 
 const userSlice = createSlice({
   name: "user",
