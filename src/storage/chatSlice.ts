@@ -9,7 +9,7 @@ const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    saveChatMessage(state, action: PayloadAction<ChatType>) {
+    editChat(state, action: PayloadAction<ChatType>) {
       const { payload } = action;
       const chatIndex = state.chats.findIndex(
         (item) => item.chatId === payload.chatId
@@ -20,8 +20,13 @@ const chatSlice = createSlice({
         state.chats = [...state.chats, action.payload];
       }
     },
+    deleteChat(state, action: PayloadAction<ChatType>) {
+      state.chats = state.chats.filter(
+        (c) => c.chatId !== action.payload.chatId
+      );
+    },
   },
 });
 
-export const { saveChatMessage } = chatSlice.actions;
+export const { editChat, deleteChat } = chatSlice.actions;
 export default chatSlice.reducer;

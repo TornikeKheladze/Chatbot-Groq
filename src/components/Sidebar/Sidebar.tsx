@@ -6,14 +6,16 @@ import {
   Pressable,
   Dimensions,
   Switch,
-  Button,
   TouchableOpacity,
   FlatList,
 } from "react-native";
 import Animated from "react-native-reanimated";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
+import Entypo from "@expo/vector-icons/Entypo";
 
 import { useSidebar } from "./useSidebar";
+import ChatListItem from "./components/ChatListItem/ChatListItem";
+import UserInfoItem from "./components/UserInfoItem";
 
 type Props = {
   isOpen: boolean;
@@ -33,7 +35,11 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
     logout,
     onChatPress,
     userChats,
+    authorizedUser,
+    activeChat,
   } = useSidebar(isOpen, onClose);
+
+  const textColor = theme.text.primary;
 
   return (
     <>
@@ -50,40 +56,40 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
           { backgroundColor: theme.bg.primary },
         ]}
       >
-        <Button title="theme change " onPress={toggle} />
-        <Switch
-          value={theme.mode === "dark" ? true : false}
-          onValueChange={toggle}
-        />
+        <TouchableOpacity style={styles.switch} onPress={toggle}>
+          <Text style={{ color: textColor }}>
+            {theme.mode === "light" ? "Dark Mode" : "Light Mode"}
+          </Text>
+          <Switch
+            value={theme.mode === "dark" ? true : false}
+            onValueChange={toggle}
+          />
+        </TouchableOpacity>
+        <UserInfoItem />
         <TouchableOpacity
           style={styles.newChatBtn}
           onPress={() => onChatPress(undefined)}
         >
-          <Text>New Chat</Text>
+          <Text style={[styles.text, { color: textColor }]}>New Chat</Text>
+          <Entypo name="new-message" size={20} color={textColor} />
         </TouchableOpacity>
-        <View>
-          <Text>test</Text>
-        </View>
+
         <FlatList
           data={userChats}
           keyExtractor={(item, index) => index.toString() + item.chatId}
-          renderItem={(chat) => (
-            <TouchableOpacity onPress={() => onChatPress(chat.item)}>
-              <Text>{chat.item.chatName}</Text>
-            </TouchableOpacity>
+          renderItem={(item) => (
+            <ChatListItem chat={item.item} onChatPress={onChatPress} />
           )}
           contentContainerStyle={styles.chatListContainer}
         />
 
-        <View>
-          <TouchableOpacity
-            style={styles.logoutButton}
-            onPress={() => dispatch(logout())}
-          >
-            <SimpleLineIcons name="logout" size={20} color="red" />
-            <Text>Logout</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={[styles.logoutButton, { backgroundColor: theme.bg.secondary }]}
+          onPress={() => dispatch(logout())}
+        >
+          <SimpleLineIcons name="logout" size={20} color="red" />
+          <Text style={[styles.text, { color: textColor }]}>Logout</Text>
+        </TouchableOpacity>
       </Animated.View>
     </>
   );
@@ -95,6 +101,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     paddingTop: 100,
+    paddingBottom: 30,
     position: "absolute",
     left: 0,
     top: 0,
@@ -103,25 +110,39 @@ const styles = StyleSheet.create({
     zIndex: 20,
     height,
     justifyContent: "center",
+    gap: 20,
   },
   backdrop: {
     backgroundColor: "rgba(0,0,0,0.4)",
     zIndex: 10,
     height,
   },
-  bottomContainer: {},
   logoutButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    justifyContent: "space-around",
+    width: "50%",
     padding: 12,
     borderRadius: 16,
     gap: 8,
   },
   chatListContainer: {
-    backgroundColor: "red",
+    gap: 5,
+  },
+  text: {
+    fontSize: 20,
+  },
+  switch: {
+    position: "absolute",
+    right: 20,
+    top: 60,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   newChatBtn: {
-    backgroundColor: "blue",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
   },
 });

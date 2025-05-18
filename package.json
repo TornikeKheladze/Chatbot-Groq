@@ -23,10 +23,12 @@
     "react-hook-form": "^7.54.2",
     "react-native": "0.79.2",
     "react-native-mmkv": "^3.2.0",
+    "react-native-popover-view": "^6.1.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
     "react-native-svg": "15.8.0",
+    "react-native-typewriter": "^0.7.0",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "yup": "^1.6.1"
@@ -35,6 +37,7 @@
     "@babel/core": "^7.25.2",
     "@types/event-source-polyfill": "^1.0.5",
     "@types/react": "~19.0.10",
+    "@types/react-native-typewriter": "^0.7.4",
     "typescript": "~5.8.3"
   },
   "private": true

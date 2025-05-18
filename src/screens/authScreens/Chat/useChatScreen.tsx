@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatType, Message } from "../../../types/common";
 import { sendMessageToGroq } from "../../../helpers/groq";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../storage/store";
-import { saveChatMessage } from "../../../storage/chatSlice";
+import { editChat } from "../../../storage/chatSlice";
+import { FlatList } from "react-native";
 
 export const useChat = (chat: ChatType | undefined) => {
+  const flatListRef = useRef<FlatList>(null);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const { theme } = useSelector((store: RootState) => store.theme);
@@ -23,11 +26,12 @@ export const useChat = (chat: ChatType | undefined) => {
     mutate,
     isPending,
     data: messages = initialMessages,
+    isSuccess,
   } = useMutation({
     mutationFn: sendMessageToGroq,
     onSuccess: (updatedMessages) => {
       dispatch(
-        saveChatMessage({
+        editChat({
           chatId: currentChat?.chatId!,
           chatName: currentChat?.chatName!,
           messages: updatedMessages,
@@ -36,6 +40,29 @@ export const useChat = (chat: ChatType | undefined) => {
       );
     },
   });
+
+  useEffect(() => {
+    if (messages.length === 6 && !currentChat?.nameChangedByAi) {
+      sendMessageToGroq([
+        ...messages,
+        {
+          sender: "user",
+          text: "Please Give Me short Name of this conversation",
+          timestamp: Date.now(),
+        },
+      ]).then((res) => {
+        const chatName = res[res.length - 1]?.text;
+        dispatch(
+          editChat({
+            ...currentChat!,
+            messages,
+            chatName,
+            nameChangedByAi: true,
+          })
+        );
+      });
+    }
+  }, [messages]);
 
   const handleSend = async (): Promise<void> => {
     if (!inputText.trim()) return;
@@ -57,7 +84,7 @@ export const useChat = (chat: ChatType | undefined) => {
     }
 
     dispatch(
-      saveChatMessage({
+      editChat({
         chatId: currentChat ? currentChat.chatId : timestamp,
         chatName: inputText,
         messages: updatedMessages,
@@ -68,5 +95,14 @@ export const useChat = (chat: ChatType | undefined) => {
     mutate(updatedMessages);
   };
 
-  return { theme, messages, inputText, setInputText, handleSend, isPending };
+  return {
+    theme,
+    messages,
+    inputText,
+    setInputText,
+    handleSend,
+    isPending,
+    isSuccess,
+    flatListRef,
+  };
 };

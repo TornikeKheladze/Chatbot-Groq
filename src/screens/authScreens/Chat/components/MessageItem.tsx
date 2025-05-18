@@ -3,14 +3,15 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../storage/store";
 import { Message } from "../../../../types/common";
+import TypeWriter from "react-native-typewriter";
 
-const MessageItem: React.FC<{ item: ListRenderItemInfo<Message> }> = ({
-  item,
-}) => {
+const MessageItem: React.FC<{
+  item: ListRenderItemInfo<Message>;
+  isLast: boolean;
+}> = ({ item, isLast }) => {
   const { theme } = useSelector((store: RootState) => store.theme);
   const messageContainerStyle = [
     styles.message,
-    ,
     item.item.sender === "user"
       ? { ...styles.userMessage, backgroundColor: theme.bg.message }
       : styles.aiMessage,
@@ -27,7 +28,13 @@ const MessageItem: React.FC<{ item: ListRenderItemInfo<Message> }> = ({
 
   return (
     <View style={messageContainerStyle}>
-      <Text style={textStyle}>{item.item.text}</Text>
+      {isLast ? (
+        <TypeWriter maxDelay={1} initialDelay={0} style={textStyle} typing={1}>
+          {item.item.text}
+        </TypeWriter>
+      ) : (
+        <Text style={textStyle}>{item.item.text}</Text>
+      )}
       {item.item.timestamp && (
         <Text style={timeStampStyle}>
           {new Date(item.item.timestamp).toLocaleTimeString([], {

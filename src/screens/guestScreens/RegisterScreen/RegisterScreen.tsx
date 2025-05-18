@@ -11,8 +11,7 @@ type RegisterScreenProps = NativeStackScreenProps<
 >;
 
 const RegisterScreen: React.FC<RegisterScreenProps> = () => {
-  const { handleSubmit, control, errors, onSubmit, setValue } =
-    useRegisterScreen();
+  const { handleSubmit, control, errors, onSubmit } = useRegisterScreen();
 
   return (
     <View style={styles.container}>

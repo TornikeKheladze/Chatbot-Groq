@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../storage/store";
 import { toggleTheme } from "../../storage/themeSlice";
 import { logout } from "../../storage/userSlice";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { AuthStackParamList } from "../../navigation/AuthStack";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatType } from "../../types/common";
@@ -19,6 +19,8 @@ const SIDEBAR_WIDTH = width * 0.8;
 
 export const useSidebar = (isOpen: boolean, onClose: () => void) => {
   const dispatch = useDispatch<AppDispatch>();
+  const { params } = useRoute<RouteProp<AuthStackParamList>>();
+  const activeChat = params?.chat;
 
   const { theme } = useSelector((store: RootState) => store.theme);
   const { chats } = useSelector((store: RootState) => store.chat);
@@ -67,5 +69,7 @@ export const useSidebar = (isOpen: boolean, onClose: () => void) => {
     logout,
     onChatPress,
     userChats,
+    authorizedUser,
+    activeChat,
   };
 };

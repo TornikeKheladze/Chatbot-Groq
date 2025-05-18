@@ -40,4 +40,5 @@ export type ChatType = {
   chatName: string;
   messages: Message[];
   chatId: number;
+  nameChangedByAi?: boolean;
 };

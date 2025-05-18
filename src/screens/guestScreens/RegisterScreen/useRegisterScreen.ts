@@ -26,7 +26,6 @@ export const useRegisterScreen = () => {
     control,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm<UserRegisterForm>({
     resolver: yupResolver(registerSchema),
   });
@@ -49,6 +48,5 @@ export const useRegisterScreen = () => {
     control,
     errors,
     onSubmit,
-    setValue,
   };
 };
