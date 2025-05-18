@@ -1,14 +1,14 @@
 import * as yup from "yup";
 import { useForm, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { User } from "../../../types/common";
 import { GuestStackParamList } from "../../../navigation/GuestStack";
 import { registerSchema } from "../../../schemas/registerSchema";
-import { AppDispatch } from "../../../storage/store";
+import { AppDispatch, RootState } from "../../../storage/store";
 import { registerUser } from "../../../storage/userSlice";
 
 interface UserRegisterForm extends User {
@@ -30,6 +30,7 @@ export const useRegisterScreen = () => {
     resolver: yupResolver(registerSchema),
   });
   const navigation = useNavigation<Navigation>();
+  const { theme } = useSelector((store: RootState) => store.theme);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -48,5 +49,6 @@ export const useRegisterScreen = () => {
     control,
     errors,
     onSubmit,
+    theme,
   };
 };

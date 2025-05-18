@@ -2,6 +2,8 @@ import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import React from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { GuestStackParamList } from "../../../navigation/GuestStack";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../storage/store";
 
 type LandingScreenProps = NativeStackScreenProps<
   GuestStackParamList,
@@ -9,22 +11,25 @@ type LandingScreenProps = NativeStackScreenProps<
 >;
 
 const LandingScreen: React.FC<LandingScreenProps> = ({ navigation }) => {
+  const { theme } = useSelector((store: RootState) => store.theme);
+  const btnStyles = [styles.button, { backgroundColor: theme.text.primary }];
+  const textStyles = [styles.buttonText, { color: theme.bg.primary }];
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
       <View style={styles.buttonWrapper}>
         <TouchableOpacity
-          style={styles.button}
+          style={btnStyles}
           onPress={() => navigation.navigate("Register")}
         >
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={textStyles}>Register</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.buttonWrapper}>
         <TouchableOpacity
-          style={styles.button}
+          style={btnStyles}
           onPress={() => navigation.navigate("Login")}
         >
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={textStyles}>Login</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -36,8 +41,7 @@ export default LandingScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
-    gap: 32, // 8 * 4 (gap-8)
+    gap: 32,
     alignItems: "center",
     paddingTop: "40%",
   },
@@ -48,11 +52,9 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 16,
     borderRadius: 24,
-    backgroundColor: "#1A1A1A",
     alignItems: "center",
   },
   buttonText: {
-    color: "#FFFFFF",
     fontSize: 24,
   },
 });

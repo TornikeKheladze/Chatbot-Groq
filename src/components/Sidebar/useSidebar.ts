@@ -20,7 +20,6 @@ const SIDEBAR_WIDTH = width * 0.8;
 export const useSidebar = (isOpen: boolean, onClose: () => void) => {
   const dispatch = useDispatch<AppDispatch>();
   const { params } = useRoute<RouteProp<AuthStackParamList>>();
-  const activeChat = params?.chat;
 
   const { theme } = useSelector((store: RootState) => store.theme);
   const { chats } = useSelector((store: RootState) => store.chat);
@@ -69,7 +68,5 @@ export const useSidebar = (isOpen: boolean, onClose: () => void) => {
     logout,
     onChatPress,
     userChats,
-    authorizedUser,
-    activeChat,
   };
 };

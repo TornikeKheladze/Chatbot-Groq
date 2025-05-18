@@ -35,8 +35,6 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
     logout,
     onChatPress,
     userChats,
-    authorizedUser,
-    activeChat,
   } = useSidebar(isOpen, onClose);
 
   const textColor = theme.text.primary;

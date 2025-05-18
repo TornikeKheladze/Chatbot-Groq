@@ -11,10 +11,11 @@ type RegisterScreenProps = NativeStackScreenProps<
 >;
 
 const RegisterScreen: React.FC<RegisterScreenProps> = () => {
-  const { handleSubmit, control, errors, onSubmit } = useRegisterScreen();
+  const { handleSubmit, control, errors, onSubmit, theme } =
+    useRegisterScreen();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
       <View style={styles.row}>
         <View style={styles.flexItem}>
           <Input
@@ -55,10 +56,12 @@ const RegisterScreen: React.FC<RegisterScreenProps> = () => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, { backgroundColor: theme.text.primary }]}
           onPress={handleSubmit(onSubmit)}
         >
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={[styles.buttonText, { color: theme.bg.primary }]}>
+            Register
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

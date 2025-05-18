@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../storage/store";
 
 type InputProps = {
   fieldName: string;
@@ -26,23 +28,30 @@ const Input: React.FC<InputProps> = ({
   props,
 }) => {
   const [isHidden, setIsHidden] = useState(true);
+  const { theme } = useSelector((store: RootState) => store.theme);
 
   const isPasswordInput =
     fieldName.includes("password") || fieldName.includes("Password");
 
+  const textColor = theme.text.primary;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{displayName}</Text>
+      <Text style={[styles.label, { color: textColor }]}>{displayName}</Text>
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            style={styles.input}
+            style={[
+              styles.input,
+              { borderColor: theme.border.default, color: textColor },
+            ]}
             onBlur={onBlur}
             onChangeText={onChange}
             value={String(value)}
             secureTextEntry={isPasswordInput ? isHidden : false}
             placeholder={displayName}
+            placeholderTextColor={theme.text.tertiary}
             {...props}
           />
         )}
@@ -57,7 +66,7 @@ const Input: React.FC<InputProps> = ({
           <Feather
             name={isHidden ? "eye-off" : "eye"}
             size={20}
-            color="black"
+            color={textColor}
           />
         </TouchableOpacity>
       )}
@@ -78,13 +87,12 @@ const styles = StyleSheet.create({
   label: {
     marginBottom: 8,
     fontSize: 20,
-    color: "#1A1A1A",
   },
   input: {
-    backgroundColor: "#FFFFFF",
     height: 40,
     borderRadius: 12,
     paddingLeft: 8,
+    borderWidth: 1,
   },
   eyeIcon: {
     position: "absolute",

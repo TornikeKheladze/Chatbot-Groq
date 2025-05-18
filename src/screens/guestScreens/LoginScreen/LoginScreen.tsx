@@ -8,10 +8,10 @@ import Input from "../../../components/Input/Input";
 type LoginScreenProps = NativeStackScreenProps<GuestStackParamList, "Login">;
 
 const LoginScreen: React.FC<LoginScreenProps> = () => {
-  const { control, handleSubmit, errors, onSubmit } = useLoginScreen();
+  const { control, handleSubmit, errors, onSubmit, theme } = useLoginScreen();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.bg.primary }]}>
       <Input
         fieldName="email"
         displayName={"Email"}
@@ -26,10 +26,12 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, { backgroundColor: theme.text.primary }]}
           onPress={handleSubmit(onSubmit)}
         >
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={[styles.buttonText, { color: theme.bg.primary }]}>
+            Login
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -41,7 +43,6 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
     alignItems: "center",
     paddingTop: "30%",
     paddingHorizontal: 16,
@@ -54,11 +55,9 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 16,
     borderRadius: 24,
-    backgroundColor: "#1A1A1A",
     alignItems: "center",
   },
   buttonText: {
-    color: "#FFFFFF",
     fontSize: 24,
   },
 });

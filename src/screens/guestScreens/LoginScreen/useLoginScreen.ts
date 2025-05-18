@@ -21,6 +21,8 @@ export const useLoginScreen = () => {
   });
 
   const { users } = useSelector((store: RootState) => store.users);
+  const { theme } = useSelector((store: RootState) => store.theme);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit = (data: UserLoginForm) => {
@@ -41,5 +43,6 @@ export const useLoginScreen = () => {
     handleSubmit,
     errors,
     onSubmit,
+    theme,
   };
 };
