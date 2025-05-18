@@ -2,12 +2,12 @@ import Groq from "groq-sdk";
 import Constants from "expo-constants";
 import { GroqMessage, Message } from "../types/common";
 
-const { GROQ_API_KEY } = Constants.expoConfig?.extra as {
-  GROQ_API_KEY: string;
+const { groqApiKey } = Constants.expoConfig?.extra as {
+  groqApiKey: string;
 };
 
 export const groq = new Groq({
-  apiKey: GROQ_API_KEY,
+  apiKey: groqApiKey,
 });
 
 export const sendMessageToGroq = async (prevMessages: Message[]) => {
