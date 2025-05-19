@@ -1,4 +1,10 @@
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { Dispatch, SetStateAction } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useSelector } from "react-redux";
@@ -45,7 +51,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
         onPress={handleSend}
         disabled={isPending || !inputText.trim()}
       >
-        <AntDesign name="arrowup" size={24} color={theme.bg.primary} />
+        {isPending ? (
+          <ActivityIndicator />
+        ) : (
+          <AntDesign name="arrowup" size={24} color={theme.bg.primary} />
+        )}
       </TouchableOpacity>
     </View>
   );

@@ -18,17 +18,6 @@ export interface User {
   password: string;
 }
 
-export interface ChatHistory {
-  id: string;
-  messages: Message[];
-}
-
-export interface ChatHistories {
-  [userId: string]: {
-    [chatId: string]: ChatHistory;
-  };
-}
-
 export interface AppStorage {
   users: User[];
   authorizedUser: User;
