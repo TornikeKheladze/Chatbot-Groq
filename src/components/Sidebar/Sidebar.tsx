@@ -34,7 +34,7 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
     dispatch,
     logout,
     onChatPress,
-    userChats,
+    chatsToRender,
   } = useSidebar(isOpen, onClose);
 
   const textColor = theme.text.primary;
@@ -73,7 +73,7 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
         </TouchableOpacity>
 
         <FlatList
-          data={userChats}
+          data={chatsToRender}
           keyExtractor={(item, index) => index.toString() + item.chatId}
           renderItem={(item) => (
             <ChatListItem chat={item.item} onChatPress={onChatPress} />
@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
     width: SIDEBAR_WIDTH,
     zIndex: 20,
     height,
-    justifyContent: "center",
     gap: 20,
   },
   backdrop: {

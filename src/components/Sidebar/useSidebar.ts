@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthStackParamList } from "../../navigation/AuthStack";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ChatType } from "../../types/common";
+import { sortChatsAddTiming } from "../../helpers/chatTimes";
 
 const { width } = Dimensions.get("window");
 const SIDEBAR_WIDTH = width * 0.8;
@@ -58,6 +59,8 @@ export const useSidebar = (isOpen: boolean, onClose: () => void) => {
     onClose();
   };
 
+  const chatsToRender = sortChatsAddTiming(userChats);
+
   return {
     backdropStyle,
     animatedStyle,
@@ -66,6 +69,6 @@ export const useSidebar = (isOpen: boolean, onClose: () => void) => {
     dispatch,
     logout,
     onChatPress,
-    userChats,
+    chatsToRender,
   };
 };

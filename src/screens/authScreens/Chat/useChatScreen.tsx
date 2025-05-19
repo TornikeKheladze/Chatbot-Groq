@@ -19,8 +19,6 @@ export const useChat = (chat: ChatType | undefined) => {
   const [inputText, setInputText] = useState<string>("");
   const [currentChat, setCurrentChat] = useState<ChatType | undefined>(chat);
 
-  // console.log(currentChat);
-
   const initialMessages =
     chats.find((c) => c.chatId === currentChat?.chatId)?.messages || [];
 
