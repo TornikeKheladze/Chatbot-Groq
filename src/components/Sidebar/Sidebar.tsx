@@ -2,20 +2,19 @@ import React from "react";
 import {
   StyleSheet,
   Text,
-  View,
   Pressable,
   Dimensions,
-  Switch,
   TouchableOpacity,
   FlatList,
 } from "react-native";
 import Animated from "react-native-reanimated";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import Entypo from "@expo/vector-icons/Entypo";
-
 import { useSidebar } from "./useSidebar";
 import ChatListItem from "./components/ChatListItem/ChatListItem";
 import UserInfoItem from "./components/UserInfoItem";
+import { useAnimation } from "../../hooks/useAnimation";
+import SidebarHead from "./components/SidebarHead";
 
 type Props = {
   isOpen: boolean;
@@ -27,15 +26,16 @@ const SIDEBAR_WIDTH = width * 0.8;
 
 const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
   const {
-    backdropStyle,
-    animatedStyle,
     theme,
-    toggle,
     dispatch,
     logout,
     onChatPress,
     chatsToRender,
-  } = useSidebar(isOpen, onClose);
+    searchTerm,
+    setSearchTerm,
+  } = useSidebar(onClose);
+
+  const { backdropStyle, animatedStyle } = useAnimation(isOpen);
 
   const textColor = theme.text.primary;
 
@@ -54,15 +54,8 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
           { backgroundColor: theme.bg.primary },
         ]}
       >
-        <TouchableOpacity style={styles.switch} onPress={toggle}>
-          <Text style={{ color: textColor }}>
-            {theme.mode === "light" ? "Dark Mode" : "Light Mode"}
-          </Text>
-          <Switch
-            value={theme.mode === "dark" ? true : false}
-            onValueChange={toggle}
-          />
-        </TouchableOpacity>
+        <SidebarHead searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
         <UserInfoItem />
         <TouchableOpacity
           style={styles.newChatBtn}
@@ -80,7 +73,6 @@ const Sidebar: React.FC<Props> = ({ isOpen, onClose }) => {
           )}
           contentContainerStyle={styles.chatListContainer}
         />
-
         <TouchableOpacity
           style={[styles.logoutButton, { backgroundColor: theme.bg.secondary }]}
           onPress={() => dispatch(logout())}
@@ -98,7 +90,7 @@ export default Sidebar;
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    paddingTop: 100,
+    paddingTop: 60,
     paddingBottom: 30,
     position: "absolute",
     left: 0,
@@ -128,14 +120,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-  },
-  switch: {
-    position: "absolute",
-    right: 20,
-    top: 60,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
   },
   newChatBtn: {
     flexDirection: "row",

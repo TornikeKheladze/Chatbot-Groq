@@ -1,8 +1,13 @@
 import { ChatType } from "../types/common";
 
-export function getChatDateCategory(
-  chatId: number
-): "Today" | "Yesterday" | "Previous 7 Days" | "Previous 30 Days" | "Older" {
+type DateCategory =
+  | "Today"
+  | "Yesterday"
+  | "Previous 7 Days"
+  | "Previous 30 Days"
+  | "Older";
+
+export function getChatDateCategory(chatId: number): DateCategory {
   const now = new Date();
   const startOfToday = new Date(
     now.getFullYear(),

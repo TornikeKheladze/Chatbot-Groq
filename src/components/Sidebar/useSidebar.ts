@@ -1,74 +1,55 @@
-import { useEffect } from "react";
-import { Dimensions } from "react-native";
-import {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../storage/store";
-import { toggleTheme } from "../../storage/themeSlice";
-import { logout } from "../../storage/userSlice";
 import { useNavigation } from "@react-navigation/native";
-import { AuthStackParamList } from "../../navigation/AuthStack";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AppDispatch, RootState } from "../../storage/store";
+import { logout } from "../../storage/userSlice";
+import { AuthStackParamList } from "../../navigation/AuthStack";
 import { ChatType } from "../../types/common";
 import { sortChatsAddTiming } from "../../helpers/chatTimes";
+import { useDebounce } from "../../hooks/useDebounce";
 
-const { width } = Dimensions.get("window");
-const SIDEBAR_WIDTH = width * 0.8;
-
-export const useSidebar = (isOpen: boolean, onClose: () => void) => {
+export const useSidebar = (onClose: () => void) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { theme } = useSelector((store: RootState) => store.theme);
   const { chats } = useSelector((store: RootState) => store.chat);
   const { authorizedUser } = useSelector((store: RootState) => store.users);
 
-  const { navigate } =
-    useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-
   const userChats = chats.filter((c) => c.userEmail === authorizedUser?.email);
 
-  const translateX = useSharedValue(-SIDEBAR_WIDTH);
+  const [searchedChats, setSearchedChats] = useState(userChats);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const backdropOpacity = useSharedValue(0);
+  const debouncedSearch = useDebounce(searchTerm, 500);
 
   useEffect(() => {
-    translateX.value = withTiming(isOpen ? 0 : -SIDEBAR_WIDTH, {
-      duration: 300,
-    });
-    backdropOpacity.value = withTiming(isOpen ? 1 : 0, { duration: 300 });
-  }, [isOpen]);
+    setSearchedChats(
+      userChats.filter((chat) =>
+        chat.chatName
+          .toLocaleLowerCase()
+          .includes(debouncedSearch.toLocaleLowerCase())
+      )
+    );
+  }, [debouncedSearch]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  const backdropStyle = useAnimatedStyle(() => ({
-    opacity: backdropOpacity.value,
-    display: backdropOpacity.value === 0 ? "none" : "flex",
-  }));
-
-  const toggle = () => {
-    dispatch(toggleTheme());
-  };
+  const { navigate } =
+    useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
   const onChatPress = (chat: ChatType | undefined) => {
     navigate("Chat", { chat });
     onClose();
   };
 
-  const chatsToRender = sortChatsAddTiming(userChats);
+  const chatsToRender = sortChatsAddTiming(searchedChats);
 
   return {
-    backdropStyle,
-    animatedStyle,
     theme,
-    toggle,
     dispatch,
     logout,
     onChatPress,
     chatsToRender,
+    searchTerm,
+    setSearchTerm,
   };
 };

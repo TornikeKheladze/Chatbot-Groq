@@ -37,6 +37,14 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ chat, onChatPress }) => {
   };
   const textColor = theme.text.primary;
 
+  const inputStyle = [
+    {
+      color: textColor,
+      borderColor: theme.border.default,
+    },
+    styles.input,
+  ];
+
   return (
     <>
       {chat.dateCategory && (
@@ -53,7 +61,7 @@ const ChatListItem: React.FC<ChatListItemProps> = ({ chat, onChatPress }) => {
         {isEditing ? (
           <View style={styles.inputContainer}>
             <TextInput
-              style={{ color: textColor, flex: 1 }}
+              style={inputStyle}
               value={input}
               onChangeText={(e) => setInput(e)}
             />
@@ -100,6 +108,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 5,
     alignItems: "center",
+  },
+  input: {
+    borderRadius: 8,
+    flex: 1,
+    borderWidth: 1,
   },
   dateCategory: {
     marginBottom: 10,
