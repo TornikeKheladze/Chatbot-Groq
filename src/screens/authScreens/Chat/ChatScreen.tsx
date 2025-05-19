@@ -18,7 +18,7 @@ type ChatScreenProps = NativeStackScreenProps<AuthStackParamList, "Chat">;
 
 const ChatScreen: React.FC<ChatScreenProps> = ({ route }) => {
   const chat = route.params?.chat;
-  return <Chat key={`chat-${chat?.chatId}`} chat={chat} />;
+  return <Chat key={`chat-${chat?.chatId || Math.random()}`} chat={chat} />;
 };
 
 const Chat: React.FC<{ chat: ChatType | undefined }> = ({ chat }) => {

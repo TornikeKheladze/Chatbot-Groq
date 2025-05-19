@@ -31,17 +31,26 @@ export const useRegisterScreen = () => {
   });
   const navigation = useNavigation<Navigation>();
   const { theme } = useSelector((store: RootState) => store.theme);
+  const { users } = useSelector((store: RootState) => store.users);
 
   const dispatch: AppDispatch = useDispatch();
 
   const onSubmit = (data: UserRegisterForm) => {
-    dispatch(registerUser(data));
-    Alert.alert("Success", "User Registered", [
-      {
-        text: "Login",
-        onPress: () => navigation.navigate("Login"),
-      },
-    ]);
+    if (users.find((user) => user.email === data.email)) {
+      Alert.alert("Error", "Email Already Used", [
+        {
+          text: "Close",
+        },
+      ]);
+    } else {
+      dispatch(registerUser(data));
+      Alert.alert("Success", "User Registered", [
+        {
+          text: "Login",
+          onPress: () => navigation.navigate("Login"),
+        },
+      ]);
+    }
   };
 
   return {
