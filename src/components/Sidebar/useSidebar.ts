@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -18,20 +18,9 @@ export const useSidebar = (onClose: () => void) => {
 
   const userChats = chats.filter((c) => c.userEmail === authorizedUser?.email);
 
-  const [searchedChats, setSearchedChats] = useState(userChats);
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedSearch = useDebounce(searchTerm, 500);
-
-  useEffect(() => {
-    setSearchedChats(
-      userChats.filter((chat) =>
-        chat.chatName
-          .toLocaleLowerCase()
-          .includes(debouncedSearch.toLocaleLowerCase())
-      )
-    );
-  }, [debouncedSearch]);
 
   const { navigate } =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -41,7 +30,12 @@ export const useSidebar = (onClose: () => void) => {
     onClose();
   };
 
-  const chatsToRender = sortChatsAddTiming(searchedChats);
+  const chatsToRender = useMemo(() => {
+    const filtered = userChats.filter((chat) =>
+      chat.chatName.toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
+    return sortChatsAddTiming(filtered);
+  }, [userChats, debouncedSearch]);
 
   return {
     theme,
